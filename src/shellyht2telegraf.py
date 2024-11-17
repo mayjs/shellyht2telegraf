@@ -30,7 +30,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     def on_connect(client, userdata, flags, reason_code):
-        print(f"Connected with result code {reason_code}")
         client.subscribe("shellyplusht/+/events/rpc")
 
     def on_message(client, userdata, msg):
@@ -44,8 +43,12 @@ if __name__ == "__main__":
                 ),
                 "battery_voltage": get_path("params.devicepower:0.battery.V", payload),
             }
-            # TODO: Create Influx line protocol line output here
-            print(data)
+            if not any(value is None for value in data.values()):
+                room = msg.topic.split("/")[1]
+                values = ",".join(f"{name}={value}" for (name, value) in data.items())
+                print(
+                    f"thermometer,room={room} {values}"
+                )  # TODO: Could we also extract the timestamp of the message?
         except Exception as e:
             print(f"Could not get data from message: {e}", file=sys.stderr)
 
