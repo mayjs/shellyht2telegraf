@@ -49,6 +49,7 @@ if __name__ == "__main__":
                 print(
                     f"thermometer,room={room} {values}"
                 )  # TODO: Could we also extract the timestamp of the message?
+                sys.stdout.flush()
         except Exception as e:
             print(f"Could not get data from message: {e}", file=sys.stderr)
 
