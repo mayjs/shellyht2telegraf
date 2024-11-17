@@ -48,5 +48,8 @@
           ];
         };
       }
-    );
+    )
+    // {
+      overlays.default = final: prev: {shellyht2telegraf = self.packages."${prev.system}".shellyht2telegraf;};
+    };
 }
