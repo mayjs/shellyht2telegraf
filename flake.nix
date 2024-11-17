@@ -17,7 +17,15 @@
         pkgs = import nixpkgs {inherit system;};
         pkg_deps = pypkgs: [pypkgs.paho-mqtt];
       in {
-        formatter = pkgs.alejandra;
+        formatter = pkgs.writeShellApplication {
+          name = "Format everything";
+          text = ''
+            echo "Formatting Nix files..."
+            ${pkgs.alejandra}/bin/alejandra "$1"
+            echo "Formatting Python files..."
+            ${pkgs.black}/bin/black "$1/src"
+          '';
+        };
         packages.default = self.packages.${system}.shellyht2telegraf;
         packages.shellyht2telegraf = pkgs.python3Packages.buildPythonApplication {
           pname = "shellyht2telegraf";
